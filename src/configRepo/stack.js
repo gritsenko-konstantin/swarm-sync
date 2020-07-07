@@ -12,10 +12,10 @@ class Stack {
     this.stackDef = stackDef;
     this.name = name;
     this.git = git(configRepoPath);
-    let packs = [...stackDef.packs];
+    const packs = [...stackDef.packs];
     // If bootstrap, we try to look for only swarm-sync pack and exclude others
     if (config.bootstrap) {
-      packs = packs.filter(packDef => packDef.pack.includes('swarm-sync'));
+      // packs = packs.filter(packDef => packDef.pack.includes('swarm-sync'));
       log.info('Bootstrap mode - only running the following packs:');
       log.info(packs);
     }
@@ -35,7 +35,10 @@ class Stack {
 
   async getChanges() {
     // If stack def changed, return all packs as changed
-    if (getDeployedStack({ stack: this.name }).commit !== (await this.getLastCommit())) {
+    const lastCommit = await this.getLastCommit();
+    const deployedStackCommit = getDeployedStack({ stack: this.name }).commit;
+
+    if (deployedStackCommit !== lastCommit) {
       log.debug(`Stack (${this.name}) definiton changed (git commit)`);
       log.trace(`Deployed: ${getDeployedStack({ stack: this.name }).commit}`);
       log.trace(`Compared: ${await this.getLastCommit()}`);

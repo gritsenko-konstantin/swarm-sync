@@ -31,7 +31,7 @@ async function checkForUpdates() {
   if (await repo.checkIsRepo()) {
     await repo.pull();
   } else {
-    await repo.clone(config.git.url, repoPath);
+    await repo.clone(config.git.url, repoPath, [`--branch=${config.git.branch}`]);
   }
 
   if (config.git_crypt && config.git_crypt.keyFile) {
